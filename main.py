@@ -389,7 +389,7 @@ def main(page: fl.Page):
     bpm_display = fl.Container(
         content = fl.Text(f"{bpm_count} BPM", scale = 1.25, color = fl.colors.WHITE),
         margin = 10,
-        padding = 19,
+        padding = 10,
         alignment = fl.alignment.center,
         width = 115, height = 75,
         border_radius = 10,
@@ -437,7 +437,7 @@ def main(page: fl.Page):
         fl.Column([minus1button, minus5button]),
         bpm_display,
         fl.Column([add1button, add5button]), 
-    ], spacing = 0)
+    ], alignment = 'CENTER')
 
 
 
@@ -447,9 +447,9 @@ def main(page: fl.Page):
         global start_time
         start_time = time.time()
         
-        tap_button.on_click = stop_tap
-        tap_button.content.value = "TAP 2"
-        tap_button.update()
+        tap_button_new.on_click = stop_tap
+        tap_button_new.text = "Tap 2"
+        tap_button_new.update()
 
     def stop_tap(e):
         global bpm_count
@@ -457,30 +457,13 @@ def main(page: fl.Page):
         
         bpm_count = int(60/stop_time)
        
-        tap_button.on_click = start_tap
-        tap_button.content.value = "TAP"
+        tap_button_new.on_click = start_tap
+        tap_button_new.text = "Tap"
         bpm_display.content.value = f"{bpm_count} BPM"
         bpm_display.update()
-        tap_button.update()
+        tap_button_new.update()
 
-    tap_button = fl.Container(
-        content = fl.Text("TAP", color = '#ffffff'), 
-        bgcolor = primary_color,
-        margin = 20,
-        padding = 19,
-        alignment = fl.alignment.center,
-        width = 75, height = 75,
-        border_radius = 10,
-        ink = True,
-        shadow=fl.BoxShadow(
-                    spread_radius=1,
-                    blur_radius=13,
-                    color=lit_circle,
-                    offset=fl.Offset(2,2),
-                    blur_style=fl.ShadowBlurStyle.INNER,),
-        on_click = start_tap
-        )
-
+    tap_button_new = fl.ElevatedButton(text = "Tap", on_click = start_tap, width = 75)
 
 
 # Volume Column
@@ -494,11 +477,11 @@ def main(page: fl.Page):
     volume_text = fl.Text("Volume", color = light, size = 16)
     volume_slider =fl.Slider(min = 0, max = 100, divisions = 100, 
                                     label = "{value}%", 
-                                on_change = volume_change, value = 50, width = page.window.max_width)
+                                on_change = volume_change, value = 50, width = 250)
     
     volume_column = fl.Column([
         fl.Row([fl.Container(content = None, bgcolor = dark, width = 10), volume_text]),
-        volume_slider
+        fl.Row([volume_slider, tap_button_new], alignment = fl.MainAxisAlignment.SPACE_EVENLY)
     ], spacing = 2)
 
 # THALAM SELECTION
@@ -538,6 +521,7 @@ def main(page: fl.Page):
     #     page.update()
 
     thalam_jathi_dropdown = fl.Dropdown(
+        scale = 0.9,
         width = 150,
         options = [
             fl.dropdown.Option("Thisram"),
@@ -572,6 +556,7 @@ def main(page: fl.Page):
 
     default_sooladhi_button = fl.SegmentedButton(
         selected = {"default"},
+        show_selected_icon = False, 
         on_change = default_sooladhi_changed,
         allow_multiple_selection = False,
         segments = [
@@ -951,6 +936,7 @@ def main(page: fl.Page):
         sharp.update()
 
     buttons = fl.SegmentedButton(
+            show_selected_icon = False,
             selected={"jalra"},
             allow_multiple_selection=False,
             on_change = sound_button_clicked,
@@ -977,7 +963,7 @@ def main(page: fl.Page):
     play_sound_selection = fl.Row([fl.Row([play_button]), fl.Row(clap_jalra_drums)], alignment = fl.MainAxisAlignment.SPACE_AROUND)
 
     page.add(Appbar,
-             fl.Column([fl.Row([bpm_row, tap_button], alignment = fl.MainAxisAlignment.SPACE_AROUND), 
+             fl.Column([fl.Row([bpm_row], alignment = fl.MainAxisAlignment.SPACE_AROUND), 
                         volume_column,
                         play_sound_selection,
                         thalam_row,
